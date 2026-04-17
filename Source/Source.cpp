@@ -1,5 +1,6 @@
 #include <raylib.h>
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -83,6 +84,7 @@ int main()
 	const int screenHeight = 800;
 	InitWindow(screenWidth, screenHeight, "Pong - VM Games");
 	SetTargetFPS(60);
+	int value = 0;
 
 	ball.radius = 20.f;
 	ball.x = screenWidth / 2.f;
@@ -111,6 +113,19 @@ int main()
 		player.Update();
 		cpuPaddle.Update(ball.y);
 
+		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius, 
+			Rectangle{ player.x, player.y, player.width, player.height }))
+		{
+			ball.speed_x *= -1;
+			value++;
+		}
+
+		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
+			Rectangle{ cpuPaddle.x, cpuPaddle.y, cpuPaddle.width, cpuPaddle.height }))
+		{
+			ball.speed_x *= -1;
+		}
+
 		// Drawing
 		ClearBackground(BLACK);
 		DrawLine(screenWidth/2, 0, screenWidth/2, screenHeight, WHITE);
@@ -118,6 +133,8 @@ int main()
 		player.Draw();
 		cpuPaddle.Draw();
 		DrawFPS(10, 10);
+		DrawText(std::to_string(value).c_str(), screenWidth - 100, 0, 32, WHITE);
+
 
 		EndDrawing();
 	}
